@@ -21,6 +21,10 @@
             </i>
           </div>
       </label>
+      <label class="login-verificationCode" >
+          <input class="input-verificationCode" autocomplete="off" type="text" v-model="checkCode" placeholder="验证码">
+          <img :src="yzUrl" class="img-verificationCode" style="float:right;"  @click="loadverificationCode"/>
+      </label>
     </div>
     <div class="operate">
       <v-button @btn-click="loginFn" :type="'block'">登录</v-button>
@@ -55,15 +59,23 @@
 <script type="text/ecmascript-6">
 import vButton from "base/vButton/vButton";
 
+localStorage.setItem("verificationCode",new Date().getTime()+Math.random())//用户访问时随机生成验证唯一标识
 export default {
   data() {
     return {
-      pwdVisable: false,
+      pwdVisable: true,
       userName: "",
-      password: ""
+      password: "",
+      checkCode : '', // 用户输入验证码
+      verificationCode : localStorage.verificationCode, // 验证码
+      // 请求验证码地址
+      yzUrl : this.baseConfig.localhost + '/common/generateVerification?verificationCode='+localStorage.verificationCode,
     };
   },
   methods: {
+    loadverificationCode(e){//加载验证码方法
+        e.target.src =  this.yzUrl+'&random='+Math.random();
+    },
     pwdVisableFn() {
       this.pwdVisable = !this.pwdVisable;
     },
@@ -79,12 +91,31 @@ export default {
         this.$alert("请输入用户名密码", options);
         this.$store.state.isLogin = false;
       } else {
-        this.$store.state.isLogin = true;
-        if (this.$route.query.redirect) { // 跳转到指定链接
-          this.$router.push({path: this.$route.query.redirect});
-        } else {
-          this.$router.push({path: "home"});
-        }
+        // 获取用户数据,判断是否有效
+        this.common.ajax({
+            url : "/user/login",
+            data : {
+                account : this.userName,
+                password : this.Base64.encode(this.password),
+                checkCode : this.checkCode,
+                verificationCode : this.verificationCode
+            },
+            success : (res)=>{
+                if(res.success){
+                  //用户登录成功,将当前用户的数据添加到localStorage中
+                  localStorage.setItem("user",res.result);
+                  this.$store.state.isLogin = true;
+                  if (this.$route.query.redirect) { // 跳转到指定链接
+                    this.$router.push({path: this.$route.query.redirect});
+                  } else {
+                    this.$router.push({path: "home"});
+                  }
+                }else{
+                  // 登录失败
+                  this.$alert(res.message);
+                }
+            }
+        });
       }
     }
   },
@@ -140,7 +171,7 @@ export default {
           line-height: normal;
           display: block;
           font-size: 16px;
-        }
+        };
       }
       .login-password{
         display: flex;
@@ -162,6 +193,26 @@ export default {
             height: 16px;
             display: block;
           }
+        }
+      }
+      .login-verificationCode{
+        margin-top : 20px;
+        display: flex;
+        padding: 0 0 0 10px;
+        background-color: #fff;
+        border-radius:  16px 16px 16px 16px;
+        box-align: center;
+        width : 100%;
+        .input-verificationCode{
+
+          padding: 12px 0;
+          width : 100%;
+          line-height: normal;
+          display: block;
+          font-size: 16px;
+        }
+        .img-verificationCode{
+          float : right;
         }
       }
     }
@@ -264,5 +315,3 @@ export default {
   }
 }
 </style>
-
-
