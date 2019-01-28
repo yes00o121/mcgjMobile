@@ -50,6 +50,7 @@ export default {
   },
   methods: {
     selectNav(event, index) {
+
       if (!event._constructed) {
         return;
       }
@@ -80,6 +81,8 @@ export default {
       tabList.style.width = (width + 1) + "px";
     },
     _adjust(current) {
+      console.log('选中操作。。。。')
+      console.log(current)
       const viewportWidth = this.$refs.viewport.clientWidth;
       const tabListWidth = this.$refs.tabList.clientWidth;
       const minTranslate = Math.min(0, viewportWidth - tabListWidth);

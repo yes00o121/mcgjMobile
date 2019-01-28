@@ -5,6 +5,7 @@ import home from "components/home/home";
 import category from "components/category/category";
 import userinfo from "components/userinfo/userinfo";
 import store from "common/js/store.js";
+import common from "../common/js/common";
 
 Vue.use(Router);
 const router = new Router({
@@ -63,7 +64,9 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some(m => m.meta.auth)) { // 判断是否需要校验
-    if (store.state.isLogin) { // 已经登陆
+    // 不使用store.state.isLogin进行判断,使用localStorege.user进行判断
+    console.log(common.user.getUser())
+    if (common.user.getUser()) { // 已经登陆
       next(); // 正常跳转到你设置好的页面
     } else {
       next({

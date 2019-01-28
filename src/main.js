@@ -9,6 +9,7 @@ import baseConfig from "../config/baseConfig";
 import "common/css/index.scss";
 import common from "./common/js/common";
 import Base64 from "js-base64";
+import $ from "jquery";
 
 // 注册
 import {Alert, Confirm, Toast, Loading} from "base/messagebox";
@@ -27,6 +28,7 @@ Vue.use(VueLazyload, {
 Vue.prototype.baseConfig = baseConfig;
 Vue.prototype.common = common;
 Vue.prototype.Base64 = Base64.Base64;
+Vue.prototype.$ = $;
 /* eslint-disable no-new */
 new Vue({
   el: "#app",

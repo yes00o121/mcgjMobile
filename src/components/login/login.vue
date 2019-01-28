@@ -3,7 +3,7 @@
   <div class="login-wrapper">
     <div class="logo-wrapper">
       <span class="logo"></span>
-      <h4 class="title">VUE登录账号</h4>
+      <h4 class="title">mcgjMobile</h4>
     </div>
     <div class="login-content">
       <label class="login-user border-1px">
@@ -31,6 +31,8 @@
       <v-button :type="'block'" :color="'secondary'">注册</v-button>
     </div>
     <div class="other">
+      <!-- 暂不使用其他方式登录  -->
+      <!--
       <fieldset class="oth_type_tit">
         <legend align="center" class="oth_type_txt">其他方式登录</legend>
       </fieldset>
@@ -39,6 +41,7 @@
         <a class="icon_type btn_weibo sns-login-link" data-type="weibo"><i class="btn_sns_icontype icon_default_weibo"></i></a>
         <a class="icon_type btn_alipay sns-login-link" data-type="alipay"><i class="btn_sns_icontype icon_default_alipay"></i></a>
       </div>
+      -->
       <div class="links">
         <a href="" class="register">立即注册</a>
         <a href="" class="forget">忘记密码？</a>
@@ -103,7 +106,7 @@ export default {
             success : (res)=>{
                 if(res.success){
                   //用户登录成功,将当前用户的数据添加到localStorage中
-                  localStorage.setItem("user",res.result);
+                  this.common.user.setUser(res.result);
                   this.$store.state.isLogin = true;
                   if (this.$route.query.redirect) { // 跳转到指定链接
                     this.$router.push({path: this.$route.query.redirect});

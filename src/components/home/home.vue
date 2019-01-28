@@ -3,7 +3,10 @@
     <div class="header">
       <div class="header-wrapper">
         <div class="header-left">
+          <!--
           <span class="logo" @click="showSetting"></span>
+          -->
+          <img class="logo" :src="this.baseConfig.localhost + this.baseConfig.imgUrl + user.photo" @click="showSetting">
         </div>
         <div class="header-middle">
             <search-box ref="searchBox" placeholder="搜索"></search-box>
@@ -20,8 +23,13 @@
         <div class="setting-wrapper">
           <div class="setting-content">
             <div class="setting-header">
+              <!--
               <div class="setting-logo" ref="settingLogo"></div>
-              <p class="user-name" ref="userName">从未长大</p>
+              -->
+              <div>
+                  <img class="login-img" :src="this.baseConfig.localhost + this.baseConfig.imgUrl + user.photo">
+              </div>
+              <p class="user-name" ref="userName" >{{user.userName}}</p>
             </div>
             <ul class="menu-list" ref="menuList">
               <li>
@@ -66,14 +74,13 @@
       </div>
     </transition>
     <div class="body-content">
+      <!-- 首页标签 -->
       <div class="tab-content" v-if="showTab === 0">
-        <slider v-if="sliderList.length>0">
-          <div v-for="item in sliderList">
-            <a :href="item.img_url">
-              <img @load="loadImage" :src="item.img_url">
-            </a>
-          </div>
-        </slider>
+        <home-load :discList = "homeLoadList" ></home-load>
+
+      </div>
+      <div class="tab-content" v-if="showTab === 2">
+        <image-load v-if="imageLoadList.length>0" :disc-list="imageLoadList"></image-load>
       </div>
       <div class="tab-content" v-if="showTab === 1">
         <index-list v-if="indexList.length>0" class="index-list-wrapper" ref="lal" :title="indexListTitle" :data="indexData" @select="indexListSelect" @title-click="indexListClick"></index-list>
@@ -142,6 +149,7 @@
           <div class="show-lang-txt">{{getLangulageTxt}}</div>
       </div>
     </div>
+    <conversation-child ref="conversationChild" ></conversation-child>
   </div>
 </template>
 
@@ -155,6 +163,8 @@ import vButton from "base/vButton/vButton";
 import wxAlert from "base/messagebox/tpls/wxAlert";
 import lazyScroll from "components/lazyScroll/lazyScroll";
 import imageLoad from "components/imageLoad/imageLoad";
+import homeLoad from "base/conversation/homeLoad";
+import conversationChild from "../conversation/conversationChild";//贴子模板
 
 const SETTING_TOP = 60;
 const SETTING_BOTTOM = 110;
@@ -167,14 +177,23 @@ export default {
       indexListTitle: "",
       indexList: [],
       imageLoadList: [],
+      homeLoadList : [],// 首页数据list
       showTab: 0,
       userSettingShow: false,
       settingStatus: "down",
-      otherContentStyle: OTHER_STYLE
+      otherContentStyle: OTHER_STYLE,
+      user : this.common.user.getUser() // 获取用户数据
     };
   },
   mounted () {
     this._getData(); // 初始化数据
+    //监听menu切换
+    this.$watch("showTab",(curr) => {
+        if(curr == 0){
+          console.log('????????????????????????????????????????????/')
+
+        }
+    });
   },
   computed: {
     indexData() {
@@ -198,6 +217,15 @@ export default {
     }
   },
   methods: {
+    //获取首页的数据
+    getHomeData(){
+      this.common.ajax({
+          url : "/conversation/selectNewestConversation",
+          success : (data)=>{
+              this.homeLoadList = data.result;
+          }
+      })
+    },
     loadingFn() {
       this.$loading.show();
       setTimeout(() => {
@@ -267,6 +295,7 @@ export default {
       this.userSettingShow = false;
     },
     _getData() {
+      //获取一些用户的配置数据
       this.$http.get("data.json").then(response => {
         response = response["body"];
         if (response && response.code === 0) {
@@ -284,6 +313,8 @@ export default {
           this.imageLoadList = response.data.imageLoadList;
         }
       });
+      //获取首页的数据
+      this.getHomeData();
     },
     _resetSettingStatus() {
       let otherContent = this.$refs.otherContent;
@@ -372,7 +403,9 @@ export default {
     indexList: indexList,
     imageLoad: imageLoad,
     vButton: vButton,
-    lazyScroll: lazyScroll
+    lazyScroll: lazyScroll,
+    homeLoad : homeLoad,
+    conversationChild : conversationChild
   }
 };
 </script>
@@ -395,9 +428,6 @@ export default {
           width: 30px;
           height: 30px;
           margin: 0px 10px;
-          background-image: url("user-logo.png");
-          background-size: contain;
-          background-repeat: no-repeat;
         }
       }
       .header-middle{
@@ -457,6 +487,12 @@ export default {
             background-image: url("user-logo.png");
             background-size: contain;
             background-repeat: no-repeat;
+          }
+          .login-img{
+              width: 40px;
+              height: 40px;
+              margin: 0px 10px;
+              padding-bottom: 8px;
           }
           .user-name{
             font-size: 16px;
