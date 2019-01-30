@@ -119,6 +119,19 @@ export default {
               }
           }
           return imgIdArr;
+      },
+      //设置图片的宽度,参数图片占比(0%-100%),不传参默认100%
+      setElementImageWidth(element,percentage){
+          var curPercentage = '100%';
+          if(percentage != null){
+              curPercentage = percentage;
+          }
+          if(element == null){
+              return "";
+          }
+          //给所有图片添加宽度
+          return element.replace(/<img/g,'<img style="padding-bottom: 10px;max-width:'+curPercentage+'"');
+
       }
   }
 }

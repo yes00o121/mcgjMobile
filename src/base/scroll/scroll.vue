@@ -114,7 +114,7 @@ export default {
       isRebounding: false,
       isPullingDown: false,
       isPullUpLoad: false,
-      pullUpDirty: true,
+      pullUpDirty: false,
       pullDownStyle: "",
       bubbleY: 0
     };

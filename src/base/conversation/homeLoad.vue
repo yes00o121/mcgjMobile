@@ -16,7 +16,7 @@
                     {{disc.userName}}
                   </div>
                   <div class="text" style="position: absolute;padding-left: 60px;top: 20px;font-size:12px;color:rgb(154, 160, 167);" >
-                      {{disc.conversationName}} | {{common.date.formatDate(disc.lastTime)}}
+                      {{disc.conversationName}}吧 | {{common.date.formatDate(disc.lastTime)}}
                   </div>
               </li>
               <li>
@@ -81,7 +81,7 @@ export default {
       pageJump(data){
           //this.$alert('功能开发中!',{title:'提示'})
           this.$parent.$refs.conversationChild.data = data;//将数据赋值给模板
-          this.$parent.$refs.conversationChild.showFn();//显示贴子页面
+          this.$parent.$refs.conversationChild.showFn(data.id);//显示贴子页面
       },
       //点赞
       fabulous(){
