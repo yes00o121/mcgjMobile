@@ -129,6 +129,8 @@ export default {
           if(element == null){
               return "";
           }
+          //替换图片的地址为系统地址
+          element = element.replace(/src=.*?(\"|').*?imgId=/g,'src=\"'+baseConfig.localhost + baseConfig.imgUrl+'')
           //给所有图片添加宽度
           return element.replace(/<img/g,'<img style="padding-bottom: 10px;max-width:'+curPercentage+'"');
 

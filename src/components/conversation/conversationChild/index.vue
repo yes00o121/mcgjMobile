@@ -18,7 +18,7 @@
       @pullingUp = "pullingDown"
       :click="true">
       <!-- 楼主数据 -->
-      <div class="item" style="padding: 20px 20px 20px 20px;">
+      <div class="item" style="padding: 20px 20px 20px 20px;min-height:600px">
           <h4 style="font-size: 20px;font-weight: 600;">{{data.title}}</h4>
           <div style="padding-top:20px;width:100%">
               <ul>
@@ -74,7 +74,7 @@ export default {
       showFlag: false,
       probeType : 3,
       currentPage : 1,//当前的页数,默认为第一页,后续追加
-      limit : 3,//一页要现实的数量
+      limit : 4,//一页要现实的数量
       currentSize : 0,//当前贴子的楼层总数,用于判断是否还能获取新的数据
       url : '/conversationChildChild/selectCCCByCCId',
       data : {},//接收的贴子数据
@@ -85,7 +85,6 @@ export default {
   methods: {
     //用户拖到最后触发,只会执行一次
     pullingDown(){
-        window.aa = this;
         //判断是否还有新的数据
         if(this.currentSize >= (this.currentPage * this.limit)){
             //小于总数,获取新一页的数据后追加到页面

@@ -114,7 +114,7 @@ export default {
       isRebounding: false,
       isPullingDown: false,
       isPullUpLoad: false,
-      pullUpDirty: false,
+      pullUpDirty: true,
       pullDownStyle: "",
       bubbleY: 0
     };
@@ -142,6 +142,22 @@ export default {
     setTimeout(() => {
       this.initScroll();
     }, 20);
+  },
+  updated (){
+      //获取当前页面的所有图片,计算图片高度,重置滚动高度
+      let img = this.$refs.wrapper.getElementsByTagName('img')
+      let count = 0
+        let length = img.length
+        if (length) {
+            let timer = setInterval(() => {
+                if (count == length) {
+                    this.scroll.refresh()//bs提供的刷新的方法，详见官网
+                    clearInterval(timer)
+                } else if (img[count].complete) {
+                    count ++
+                }
+            }, 100)
+        }
   },
   methods: {
     initScroll() {
